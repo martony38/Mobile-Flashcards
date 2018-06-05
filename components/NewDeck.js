@@ -1,7 +1,34 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { TouchableOpacity, Text, TextInput, View } from 'react-native';
+import {
+  TouchableOpacity,
+  Text,
+  TextInput,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  ImageBackground
+} from 'react-native';
+import styled from 'styled-components';
 import { handleAddDeck } from "../actions/decks";
+import { SubmitButton } from "./NewCard";
+import { ButtonText } from "./Card";
+
+const NewDeckInput = styled(TextInput)`
+border-radius: 5px;
+border-width: 1px;
+border-style: solid;
+border-color: black;
+width: 100%;
+padding: 10px;
+margin-bottom: 10px;
+background-color: #F4DBAA;
+`
+
+const NewDeckContainer = styled(ScrollView)`
+  padding: 40px;
+`
 
 class NewDeck extends Component {
   state = {
@@ -20,20 +47,33 @@ class NewDeck extends Component {
     const { text } = this.state;
 
     return (
-      <View>
-        <Text>What is the title of your new deck</Text>
-        <TextInput
-          placeholder="Deck Title"
-          value={text}
-          onChangeText={(text) => this.setState({ text })}
-        />
-        <TouchableOpacity
-          disabled={text === ''}
-          onPress={this.createDeck}
+      <ImageBackground style={{flex: 1}} source={require('../img/wood-background.jpg')}>
+        <KeyboardAvoidingView
+          style={{flex: 1}}
+          behavior={Platform.OS === 'ios' ? 'padding' : ''}
         >
-          <Text>SUBMIT</Text>
-        </TouchableOpacity>
-      </View>
+          <NewDeckContainer
+            contentContainerStyle={{
+              alignItems: 'center'
+            }}
+            keyboardDismissMode='interactive'
+          >
+            <NewDeckInput
+              autoFocus
+              multiline = {true}
+              placeholder="Enter the title of your new deck..."
+              value={text}
+              onChangeText={(text) => this.setState({ text })}
+            />
+            <SubmitButton
+              disabled={text === ''}
+              onPress={this.createDeck}
+            >
+              <ButtonText>Create Deck</ButtonText>
+            </SubmitButton>
+          </NewDeckContainer>
+        </KeyboardAvoidingView>
+      </ImageBackground>
     );
   }
 }
