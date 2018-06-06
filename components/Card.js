@@ -82,7 +82,7 @@ const CardFront = ({ text, opacity, showAnswer, ready }) => (
   </CardFace>
 )
 
-const CardBack = ({ text, opacity, answerCorrect, answerIncorrect, ready, rotateY, scaleX }) => (
+const CardBack = ({ text, opacity, answerCorrect, answerIncorrect, ready, scaleX }) => (
   <CardFace
     style={{ opacity, transform: [{ scaleX }] }}
   >
