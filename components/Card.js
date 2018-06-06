@@ -4,11 +4,13 @@ import { PanResponder, TouchableOpacity, Text, View, Dimensions, Animated } from
 import styled, { css } from 'styled-components';
 
 const { width } = Dimensions.get('window');
+const cardMargin = 15;
+const cardWidth = width - 2 * cardMargin;
 
 export const card = css`
   top: ${props => props.offset ? (- props.offset * 0.5) : 0}px;
   left: ${props => props.offset ? (- props.offset * 0.5) : 0}px;
-  margin: 15px;
+  margin: ${cardMargin}px;
   border-radius: 7px;
   border-width: 1px;
   border-color: rgb(188,130,78);
@@ -35,7 +37,7 @@ const CardFace = styled(Animated.View)`
 `
 
 export const CardButton = styled(TouchableOpacity)`
-  background-color: ${props => props.correct ? '#29a329' : '#e62e00'};
+  background-color: ${props => props.color};
   border-radius: 30px;
   padding-top: 20px;
   padding-bottom: 20px;
@@ -55,31 +57,46 @@ export const CardText = styled(Text)`
   font-weight: bold;
   padding-left: 20px;
   padding-right: 20px;
+  text-align: center;
 `
 
-const CardFront = ({ text, opacity }) => (
+const CardHelp = styled(Text)`
+  text-align: center;
+`
+
+const CardFront = ({ text, opacity, showAnswer, ready }) => (
   <CardFace
     style={{ opacity }}
   >
     <CardText>{text}</CardText>
-    <Text>Turn card to show answer</Text>
+    <View style={{ alignItems: 'center'}}>
+      <CardButton
+        color={'blue'}
+        onPress={showAnswer}
+        disabled={!ready}
+      >
+        <ButtonText>Show Answer</ButtonText>
+      </CardButton>
+      <CardHelp>Turn card by swiping to show answer</CardHelp>
+    </View>
   </CardFace>
 )
 
-const CardBack = ({ text, opacity, answerCorrect, answerIncorrect, ready }) => (
+const CardBack = ({ text, opacity, answerCorrect, answerIncorrect, ready, rotateY, scaleX }) => (
   <CardFace
-    style={{ opacity, transform: [{rotateY: '180deg'}] }}
+    style={{ opacity, transform: [{ scaleX }] }}
   >
     <CardText>{text}</CardText>
     <View>
       <CardButton
-        correct
+        color={'rgb(105,169,57)'}
         onPress={answerCorrect}
         disabled={!ready}
       >
         <ButtonText>Correct</ButtonText>
       </CardButton>
       <CardButton
+        color={'#e62e00'}
         onPress={answerIncorrect}
         disabled={!ready}
       >
@@ -95,25 +112,33 @@ class Card extends Component {
     initialAngle: 0,
     ready: true,
     xPosition: new Animated.Value(0),
-    newCard: true
-  }
-
-  componentDidMount() {
+    newCard: true,
+    showAnswer: false
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { xPosition } = this.state;
 
     if (prevProps.card !== this.props.card) {
+
+      this.setState({
+        // Tell component animation is running.
+        ready: false,
+        // Show the question side when a new card appears.
+        showAnswer: false
+      });
+
+      // Slide in card from right of screen.
       Animated.spring(xPosition, {
         toValue: 0
-      }).start()
+      }).start();
     }
   }
 
   reset = (callback) => {
     const { xPosition, gestureAngle } = this.state;
 
+    // Slide out card to left of screen.
     Animated.timing(xPosition, {
       toValue: - width
     }).start(() => {
@@ -133,10 +158,33 @@ class Card extends Component {
     this.reset(this.props.answerIncorrect);
   }
 
+  flipCard = () => {
+    const { gestureAngle } = this.state;
+
+    // Tell component animation is running
+    this.setState({ ready: false });
+
+    // Flip card clockwise.
+    Animated.timing(gestureAngle, {
+      duration: 1000,
+      toValue: - cardWidth
+    }).start(({ finished }) => {
+      this.state.gestureAngle.setValue(0);
+      this.setState((prevState) => {
+        return {
+          initialAngle: prevState.initialAngle - cardWidth,
+          ready: finished,
+          showAnswer: !prevState.showAnswer
+        }
+      });
+    });
+  }
+
   _panResponder = PanResponder.create({
     onMoveShouldSetPanResponder: (evt, gestureState) => true,
     onPanResponderGrant: (evt, gestureState) => {
-      this.setState({ ready: false })
+      // Tell component animation is running
+      this.setState({ ready: false });
     },
     onPanResponderMove: Animated.event([
       null,
@@ -144,33 +192,34 @@ class Card extends Component {
     ]),
     onPanResponderTerminationRequest: (evt, gestureState) => true,
     onPanResponderRelease: (evt, gestureState) => {
-      const { width } = Dimensions.get('window');
       const { gestureAngle, initialAngle } = this.state;
 
-      if (gestureState.dx > ((width - 30) / 2)) {
-        // Flip card.
+      if (gestureState.dx > (cardWidth / 2)) {
+        // Flip card counterclockwise.
         Animated.spring(gestureAngle, {
-          toValue: width - 30
-        }).start(() => {
+          toValue: cardWidth
+        }).start(({ finished }) => {
           this.state.gestureAngle.setValue(0);
           this.setState((prevState) => {
             return {
-              initialAngle: prevState.initialAngle + width - 30,
-              ready: true
+              initialAngle: prevState.initialAngle + cardWidth,
+              ready: finished,
+              showAnswer: !prevState.showAnswer
             }
           });
         });
 
-      } else if (gestureState.dx < - ((width - 30) / 2)) {
-        // Flip card.
+      } else if (gestureState.dx < - (cardWidth / 2)) {
+        // Flip card clockwise.
         Animated.spring(gestureAngle, {
-          toValue: 30 - width
-        }).start(() => {
+          toValue: - cardWidth
+        }).start(({ finished }) => {
           this.state.gestureAngle.setValue(0);
           this.setState((prevState) => {
             return {
-              initialAngle: prevState.initialAngle + 30 - width,
-              ready: true
+              initialAngle: prevState.initialAngle - cardWidth,
+              ready: finished,
+              showAnswer: !prevState.showAnswer
             }
           });
         });
@@ -178,8 +227,8 @@ class Card extends Component {
         // Return card to initial position.
         Animated.spring(gestureAngle, {
           toValue: 0
-        }).start(() => {
-          this.setState({ ready: true });
+        }).start(({ finished }) => {
+          this.setState({ ready: finished });
         });
       }
     }
@@ -187,22 +236,30 @@ class Card extends Component {
 
   render() {
     const { question, answer } = this.props.card;
-    const { gestureAngle, initialAngle, ready, xPosition, newCard } = this.state;
-    const { width } = Dimensions.get('window');
+    const { gestureAngle, initialAngle, ready, xPosition, newCard, showAnswer } = this.state;
 
     const cardAngle = Animated.modulo(
       Animated.add(initialAngle, gestureAngle),
-      2 * (width - 30)
+      2 * cardWidth
     ).interpolate({
-      inputRange: [2 * (30 - width), 30 - width, 0, width - 30, 2 * (width - 30)],
+      inputRange: [ - 2 * cardWidth, - cardWidth, 0, cardWidth, 2 * cardWidth],
       outputRange: [-360, -180, 0, 180, 360]
     });
 
     const newPosition = Animated.multiply(xPosition, -1);
 
+    const cardFrontOpacity = cardAngle.interpolate({
+      inputRange: [-360, -270, -269, -180, -90, -89, 0, 89, 90, 180, 269, 270, 360],
+      outputRange: [1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1]
+    })
+    const cardBackOpacity = cardAngle.interpolate({
+      inputRange: [-360, -270, -269, -180, -90, -89, 0, 89, 90, 180, 269, 270, 360],
+      outputRange: [0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0]
+    })
+
     return (
       <StyledCard
-        width={width - 30}
+        width={cardWidth}
         style={{
           transform: [
             { rotateY: cardAngle.interpolate({
@@ -219,25 +276,22 @@ class Card extends Component {
         }}
         {...this._panResponder.panHandlers}
       >
-        <CardFront
-          width={width - 30}
-          opacity={cardAngle.interpolate({
-            inputRange: [-360, -270, -269, -180, -90, -89, 0, 89, 90, 180, 269, 270, 360],
-            outputRange: [1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1]
-          })}
+        {(!ready || !showAnswer) && <CardFront
+          width={cardWidth}
+          opacity={cardFrontOpacity}
           text={question}
-        />
-        <CardBack
-          width={width - 30}
-          opacity={cardAngle.interpolate({
-            inputRange: [-360, -270, -269, -180, -90, -89, 0, 89, 90, 180, 269, 270, 360],
-            outputRange: [0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0]
-          })}
+          showAnswer={this.flipCard}
+          ready={ready}
+        />}
+        {(!ready || showAnswer) && <CardBack
+          width={cardWidth}
+          opacity={cardBackOpacity}
           text={answer}
           answerCorrect={this.answerCorrect}
           answerIncorrect={this.answerIncorrect}
           ready={ready}
-        />
+          scaleX={-1}
+        />}
       </StyledCard>
     );
   }
