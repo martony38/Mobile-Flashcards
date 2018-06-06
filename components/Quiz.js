@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, Text, View, ImageBackground } from 'react-native';
 import styled from 'styled-components';
-import Card from "./Card";
+import Card, { CardButton, ButtonText } from "./Card";
 
 const QuizScore = styled(Text)`
   font-size: 100px;
-  margin-top: 100px;
   color: rgb(105,169,57);
   text-shadow: -1px 1px 10px rgba(0, 0, 0, 0.75);
+`
+
+const QuizScoreView = styled(View)`
+  flex: 1;
+  justify-content: space-around;
+  align-items: center;
 `
 
 export default class Quiz extends Component {
@@ -47,6 +52,15 @@ export default class Quiz extends Component {
     this.goToNextCard();
   }
 
+  retakeQuiz = () => {
+    this.props.navigation.setParams({ cardNumber: 1 });
+    this.setState({
+      cards: this.props.navigation.getParam('cards'),
+      correctAnswers: 0,
+      wrongAnswers: 0
+    });
+  }
+
   render() {
     const { cards, correctAnswers, wrongAnswers } = this.state;
 
@@ -58,9 +72,24 @@ export default class Quiz extends Component {
                 id={cards[0]}
                 answerCorrect={this.answerCorrect}
                 answerIncorrect={this.answerIncorrect}
-                style={{zIndex: 10}}
               />
-            : <QuizScore>{(correctAnswers / (correctAnswers + wrongAnswers) * 100).toFixed()} %</QuizScore>}
+            : <QuizScoreView>
+                <QuizScore>{(correctAnswers / (correctAnswers + wrongAnswers) * 100).toFixed()} %</QuizScore>
+                <View>
+                  <CardButton
+                    color={'blue'}
+                    onPress={this.retakeQuiz}
+                  >
+                    <ButtonText>Retake Quiz</ButtonText>
+                  </CardButton>
+                  <CardButton
+                    color={'rgb(105,169,57)'}
+                    onPress={() => { this.props.navigation.goBack() }}
+                  >
+                    <ButtonText>Back to Deck</ButtonText>
+                  </CardButton>
+                </View>
+              </QuizScoreView>}
         </View>
       </ImageBackground>
     );
