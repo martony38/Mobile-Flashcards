@@ -16,6 +16,7 @@ const FullDeckTitle = styled(DeckTitle)`
   font-size: 20px;
   padding-left: 10px;
   padding-right: 10px;
+  text-align: center;
 `
 
 class Deck extends Component {
@@ -81,13 +82,13 @@ class Deck extends Component {
             </DeckDescription>
             <View>
               <CardButton
-                style={{ backgroundColor: 'blue' }}
+                color={'blue'}
                 onPress={this.addCard}
               >
                 <ButtonText>Add Card</ButtonText>
               </CardButton>
               <CardButton
-                style={{ backgroundColor: 'purple' }}
+                color={'purple'}
                 onPress={this.startQuiz}
               >
                 <ButtonText>Start Quiz</ButtonText>

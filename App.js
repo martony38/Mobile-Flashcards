@@ -18,14 +18,14 @@ const Tabs = createBottomTabNavigator({
     screen: DeckList,
     navigationOptions: {
       tabBarLabel: 'List of decks',
-      tabBarIcon: ({ tintColor }) => <MaterialCommunityIcons name='cards' size={30} color={tintColor} />
+      tabBarIcon: ({ tintColor }) => <MaterialCommunityIcons name='cards' size={40} color={tintColor} />
     }
   },
   NewDeck: {
     screen: NewDeck,
     navigationOptions: {
       tabBarLabel: 'New deck',
-      tabBarIcon: ({ tintColor }) => <Ionicons name='ios-add' size={30} color={tintColor} />
+      tabBarIcon: ({ tintColor }) => <Ionicons name='ios-add' size={40} color={tintColor} />
     }
   }
 },
