@@ -22,7 +22,10 @@ export function handleAddDeck(title) {
   return (dispatch) => {
     // Save deck to device storage.
     return saveDeck(title)
-      .then((deck) => dispatch(addDeck(deck)))
+      .then((deck) => {
+        dispatch(addDeck(deck));
+        return deck.id;
+      })
       .catch((e) => {
         console.log('There was an error. Try Again.');
       });

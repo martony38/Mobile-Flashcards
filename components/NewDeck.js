@@ -36,11 +36,17 @@ class NewDeck extends Component {
   }
 
   createDeck = () => {
-    this.props.dispatch(handleAddDeck(this.state.text));
+    const title = this.state.text;
 
     this.setState({ text: '' });
 
-    this.props.navigation.goBack();
+    this.props.dispatch(handleAddDeck(title))
+      .then((id) => {
+        this.props.navigation.navigate(
+          'Deck',
+          { title, id}
+        )
+      });
   }
 
   render() {
