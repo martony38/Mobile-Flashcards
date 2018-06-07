@@ -122,8 +122,6 @@ class Card extends Component {
     if (prevProps.card !== this.props.card) {
 
       this.setState({
-        // Tell component animation is running.
-        ready: false,
         // Show the question side when a new card appears.
         showAnswer: false
       });
