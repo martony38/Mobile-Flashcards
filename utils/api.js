@@ -1,7 +1,9 @@
 import { AsyncStorage } from 'react-native';
+import { Notifications } from 'expo';
 
 const DECK_STORAGE_KEY = 'MobileFlashCards:deck'
 const CARD_STORAGE_KEY = 'MobileFlashCards:card'
+const LOCAL_NOTIFICATION_KEY = 'MobileFlashCards:localNotification';
 
 const initial_decks = [
   {
@@ -35,12 +37,17 @@ function generateId(title) {
 }
 
 export function getInitialData() {
+
+  //deleteAllLocalNotifications();
+
   return Promise.all([
     getCards(),
     getDecks(),
-  ]).then(([cards, decks]) => ({
+    getLocalNotifications()
+  ]).then(([cards, decks, localNotifications]) => ({
     cards,
-    decks
+    decks,
+    localNotifications
   }));
 }
 
@@ -71,6 +78,11 @@ function getCards() {
   return getItems(CARD_STORAGE_KEY);
 };
 
+function getLocalNotifications() {
+  // Return all of the local notifications.
+  return getItems(LOCAL_NOTIFICATION_KEY);
+}
+
 function getItem(storageKey, id) {
   // Take in a storage key and id argument and return the item associated.
 
@@ -82,14 +94,79 @@ function getItem(storageKey, id) {
     })
 };
 
+function deleteAllItems(storageKey) {
+  // Delete all item associated with the storage key.
+  return AsyncStorage.getAllKeys()
+    .then((keys) => AsyncStorage.multiRemove(keys.filter((key) => key.includes(storageKey))));
+}
+
 function getDeck(id) {
   // Take in a single id argument and return the deck associated with that id.
-  return getItem(DECK_STORAGE_KEY, id)
-};
+  return getItem(DECK_STORAGE_KEY, id);
+}
 
 function getCard(id) {
   // Take in a single id argument and return the deck associated with that id.
-  return getItem(CARD_STORAGE_KEY, id)
+  return getItem(CARD_STORAGE_KEY, id);
+}
+
+function getLocalNotification(id) {
+  // Take in a single id argument and return the local notification associated with that id.
+  return getItem(LOCAL_NOTIFICATION_KEY, id);
+}
+
+function deleteAllDecks() {
+  return deleteAllItems(DECK_STORAGE_KEY);
+}
+
+function deleteAllCards() {
+  return deleteAllItems(CARD_STORAGE_KEY);
+}
+
+function deleteAllLocalNotifications() {
+  Notifications.cancelAllScheduledNotificationsAsync();
+  return deleteAllItems(LOCAL_NOTIFICATION_KEY);
+}
+
+function formatLocalNotification() {
+  return {
+    title: "It's time to study!",
+    body: "👋🏼 You have not studied your flashcards today, stop reading Trump tweets and go study!",
+    ios: {
+      sound: true
+    },
+    android: {
+      sound: true,
+      priority: 'high',
+      sticky: false,
+      vibrate: true
+    }
+  }
+}
+
+export function saveLocalNotification() {
+  let tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(20);
+  tomorrow.setMinutes(0);
+
+
+  return Notifications.scheduleLocalNotificationAsync(
+    formatLocalNotification(),
+    {
+      time: tomorrow,
+      repeat: 'day'
+    }
+  ).then((id) => {
+    return AsyncStorage.setItem(LOCAL_NOTIFICATION_KEY + ':' + id, JSON.stringify(true))
+      .then(() => id);
+  });
+};
+
+export function deleteLocalNotification(id) {
+  return getLocalNotification(id)
+    .then(() => AsyncStorage.removeItem(LOCAL_NOTIFICATION_KEY + ':' + id))
+    .then(() => Notifications.cancelScheduledNotificationAsync(id));
 };
 
 function formatDeck(title) {

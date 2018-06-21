@@ -10,7 +10,7 @@ const cardWidth = width - 2 * cardMargin;
 export const card = css`
   top: ${props => props.offset ? (- props.offset * 0.5) : 0}px;
   left: ${props => props.offset ? (- props.offset * 0.5) : 0}px;
-  margin: ${cardMargin}px;
+  margin: ${props => props.small ? 5 : cardMargin}px;
   border-radius: 7px;
   border-width: 1px;
   border-color: rgb(188,130,78);
@@ -64,7 +64,7 @@ const CardHelp = styled(Text)`
   text-align: center;
 `
 
-const CardFront = ({ text, opacity, showAnswer, ready }) => (
+const CardFront = ({ text, opacity, showAnswer, ready, deleteCard }) => (
   <CardFace
     style={{ opacity }}
   >
@@ -78,6 +78,13 @@ const CardFront = ({ text, opacity, showAnswer, ready }) => (
         <ButtonText>Show Answer</ButtonText>
       </CardButton>
       <CardHelp>Turn card by swiping to show answer</CardHelp>
+      <CardButton
+        color={'black'}
+        onPress={deleteCard}
+        disabled={!ready}
+      >
+        <ButtonText>Delete Card</ButtonText>
+      </CardButton>
     </View>
   </CardFace>
 )
@@ -87,6 +94,7 @@ const CardBack = ({ text, opacity, answerCorrect, answerIncorrect, ready, scaleX
     style={{ opacity, transform: [{ scaleX }] }}
   >
     <CardText>{text}</CardText>
+    {/*TODO: Reduce font sixe if text too long to fit on card */}
     <View>
       <CardButton
         color={'rgb(105,169,57)'}
@@ -112,11 +120,10 @@ class Card extends Component {
     initialAngle: 0,
     ready: true,
     xPosition: new Animated.Value(0),
-    newCard: true,
     showAnswer: false
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     const { xPosition } = this.state;
 
     if (prevProps.card !== this.props.card) {
@@ -190,7 +197,7 @@ class Card extends Component {
     ]),
     onPanResponderTerminationRequest: (evt, gestureState) => true,
     onPanResponderRelease: (evt, gestureState) => {
-      const { gestureAngle, initialAngle } = this.state;
+      const { gestureAngle } = this.state;
 
       if (gestureState.dx > (cardWidth / 2)) {
         // Flip card counterclockwise.
@@ -233,8 +240,8 @@ class Card extends Component {
   })
 
   render() {
-    const { question, answer } = this.props.card;
-    const { gestureAngle, initialAngle, ready, xPosition, newCard, showAnswer } = this.state;
+    const { question, answer, id } = this.props.card;
+    const { gestureAngle, initialAngle, ready, xPosition, showAnswer } = this.state;
 
     const cardAngle = Animated.modulo(
       Animated.add(initialAngle, gestureAngle),
@@ -279,6 +286,7 @@ class Card extends Component {
           opacity={cardFrontOpacity}
           text={question}
           showAnswer={this.flipCard}
+          deleteCard={() => this.props.deleteCard(id)}
           ready={ready}
         />}
         {(!ready || showAnswer) && <CardBack

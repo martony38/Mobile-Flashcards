@@ -2,35 +2,11 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { FlatList, Text, View, TouchableOpacity, Dimensions, ImageBackground } from 'react-native';
 import styled from 'styled-components';
-import { card } from "./Card";
-
-// Use to fill store for testing purposes
-import { handleAddDeck } from "../actions/decks";
-
+import { handleAddLocalNotification } from "../actions/notifications";
+import { TopOfDeck, DeckCard, DeckTitle, DeckDescription } from './Deck';
 
 const DeckRow = styled(View)`
   flex-direction: row;
-`
-
-export const DeckCard = styled(View)`
-  ${card}
-  ${props => !props.lastOne && 'position: absolute;'}
-  box-shadow: 0 1px 1px rgba(0,0,0,0.2);
-`
-
-export const TopOfDeck = styled(View)`
-  ${card}
-  justify-content: space-around;
-  align-items: center;
-`
-
-export const DeckTitle = styled(Text)`
-  font-weight: bold;
-  text-align: center;
-`
-
-export const DeckDescription = styled(View)`
-  align-items: center;
 `
 
 function Deck({ title, id, navigation, cards }) {
@@ -45,15 +21,17 @@ function Deck({ title, id, navigation, cards }) {
     >
       {cards.slice(0,10).map((card, index) => (
         <DeckCard
+          small
           offset={index}
-          width={((width - 6 * 15) / 3)}
+          width={((width - 6 * 5) / 3)}
           lastOne={index === cards.length}
           key={card}
         />
       ))}
       <TopOfDeck
+        small
         offset={cards.length > 10 ? 9 : cards.length - 1}
-        width={((width - 6 * 15) / 3)}
+        width={((width - 6 * 5) / 3)}
         style={{opacity: cards.length === 0 ? 0.5 : 1}}
       >
         <DeckTitle numberOfLines={3}>{title}</DeckTitle>
@@ -68,16 +46,15 @@ function Deck({ title, id, navigation, cards }) {
 
 class DeckList extends Component {
   componentDidMount() {
-    // Fill store for testing purposes
-    this.props.dispatch(handleAddDeck('Test Deck'));
-    this.props.dispatch(handleAddDeck('Another Deck'));
-    this.props.dispatch(handleAddDeck('Jamais Deux Sans Trois'));
+    const { dispatch, localNotifications } = this.props;
+
+    if (Object.values(localNotifications).filter((value) => value === true).length === 0) {
+      dispatch(handleAddLocalNotification());
+    }
   }
 
   renderDeckRow = ({ item }) => (
-    <DeckRow
-      numberOfDecks={item.length}
-    >
+    <DeckRow>
       {item.map((deck) => (
         <Deck
           key={deck.id}
@@ -119,9 +96,10 @@ class DeckList extends Component {
   }
 }
 
-function mapStateToProps({ decks }) {
+function mapStateToProps({ decks, localNotifications }) {
   return {
-    decks: Object.keys(decks).map((key) => decks[key])
+    decks: Object.keys(decks).map((key) => decks[key]),
+    localNotifications
   };
 }
 

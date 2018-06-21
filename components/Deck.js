@@ -1,14 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { TouchableOpacity, Text, View, Dimensions, ImageBackground } from 'react-native';
+import { Text, View, Dimensions, ImageBackground } from 'react-native';
 import styled from 'styled-components';
-import { handleAddCard } from '../actions/cards';
-import { DeckDescription, DeckTitle, DeckCard } from "./DeckList";
 import { card, CardButton, ButtonText, CardText } from "./Card";
 
-const TopOfDeck = styled(View)`
+export const TopOfDeck = styled(View)`
   ${card}
   justify-content: space-around;
+  align-items: center;
+`
+
+export const DeckCard = styled(View)`
+  ${card}
+  ${props => !props.lastOne && 'position: absolute;'}
+  box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+`
+
+export const DeckTitle = styled(Text)`
+  font-weight: bold;
+  text-align: center;
+`
+
+export const DeckDescription = styled(View)`
   align-items: center;
 `
 
@@ -26,16 +39,6 @@ class Deck extends Component {
     return {
       title
     };
-  }
-
-  componentDidMount() {
-    const { deck } = this.props;
-
-    this.props.dispatch(handleAddCard(deck.id, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit?', 'Eiusmod tempor incididunt ut labore.'));
-    this.props.dispatch(handleAddCard(deck.id, 'Sed do eiusmod tempor incididunt ut labore?', 'Laboris nisi ut aliquip ex ea commodo.'));
-    this.props.dispatch(handleAddCard(deck.id, 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur?', 'Excepteur sint occaecat cupidatat non proident.'));
-    this.props.dispatch(handleAddCard(deck.id, 'Sunt in culpa qui officia deserunt?', 'Error sit voluptatem accusantium doloremque laudantium.'));
-    this.props.dispatch(handleAddCard(deck.id, 'Laboris nisi ut aliquip ex ea commodo consequat?', 'Labore et dolore magna aliqua.'));
   }
 
   addCard = () => {
@@ -87,6 +90,7 @@ class Deck extends Component {
               >
                 <ButtonText>Add Card</ButtonText>
               </CardButton>
+              {/* TODO: Deactivate button if deck has not any cards */}
               <CardButton
                 color={'purple'}
                 onPress={this.startQuiz}
