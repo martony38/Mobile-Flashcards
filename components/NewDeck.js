@@ -56,7 +56,7 @@ class NewDeck extends Component {
       <ImageBackground style={{flex: 1}} source={require('../img/wood-background.jpg')}>
         <KeyboardAvoidingView
           style={{flex: 1}}
-          behavior={Platform.OS === 'ios' ? 'padding' : ''}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
           <NewDeckContainer
             contentContainerStyle={{
