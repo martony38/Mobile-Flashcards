@@ -11,8 +11,8 @@ import {
   ImageBackground
 } from 'react-native';
 import styled from 'styled-components';
-import { handleAddCard } from '../actions/cards';
-import { ButtonText } from "./Card";
+import { handleEditCard, handleRemoveCard } from '../actions/cards';
+import { ButtonText, CardButton } from "./Card";
 
 const { width } = Dimensions.get('window');
 
@@ -42,25 +42,28 @@ export const NewCardInput = styled(TextInput)`
   background-color: #F4DBAA;
 `
 
-class NewCard extends Component {
+class EditCard extends Component {
   static navigationOptions = {
-    title: 'Add Card',
+    title: 'Edit Card',
   };
 
   state = {
-    question: '',
-    answer: ''
+    question: this.props.card.question,
+    answer: this.props.card.answer,
   }
 
-  createCard = () => {
-    const deckId = this.props.navigation.getParam('id');
+  updateCard = () => {
+    const { id } = this.props.card;
 
-    this.props.dispatch(handleAddCard(deckId, this.state.question, this.state.answer));
+    this.props.dispatch(handleEditCard(id, this.state.question, this.state.answer));
 
-    this.setState({
-      question: '',
-      answer: ''
-    });
+    this.props.navigation.goBack();
+  }
+
+  deleteCard = () => {
+    const { card: { id }, deckId } = this.props;
+
+    this.props.dispatch(handleRemoveCard(deckId, id));
 
     this.props.navigation.goBack();
   }
@@ -97,10 +100,16 @@ class NewCard extends Component {
             />
             <SubmitButton
               disabled={question === '' || answer === ''}
-              onPress={this.createCard}
+              onPress={this.updateCard}
             >
-              <ButtonText>Create Card</ButtonText>
+              <ButtonText>Update Card</ButtonText>
             </SubmitButton>
+            <CardButton
+              color={'red'}
+              onPress={this.deleteCard}
+            >
+              <ButtonText>Delete Card</ButtonText>
+            </CardButton>
           </NewCardContainer>
         </ KeyboardAvoidingView>
       </ImageBackground>
@@ -108,4 +117,14 @@ class NewCard extends Component {
   }
 }
 
-export default connect()(NewCard);
+function mapStateToProps({ cards }, { navigation }) {
+  const card = cards[navigation.getParam('id')];
+  const deckId = navigation.getParam('deckId')
+
+  return {
+    card,
+    deckId
+  };
+}
+
+export default connect(mapStateToProps)(EditCard);

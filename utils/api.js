@@ -242,6 +242,17 @@ export function saveCard(deckId, question, answer) {
     .then(() => card);
 };
 
+export function updateCard(id, question, answer) {
+  const card = getCard(id);
+  const { decks } = card;
+
+  return AsyncStorage.setItem(CARD_STORAGE_KEY + ':' + id, JSON.stringify({
+    answer,
+    question,
+    decks
+  }));
+}
+
 export function addCardToDeck(deckId, cardId) {
   // Take in two arguments, deck id and card id, and will add the card id to the list
   // of cards for the associated deck and add the deck id to the list of decks for the associated card.
@@ -276,12 +287,12 @@ export function addCardToDeck(deckId, cardId) {
 
 export function removeCardFromDeck(deckId, cardId) {
   return Promise.all([
-    AsyncStorage.getDeck(deckId)
+    getDeck(deckId)
       .then((deck) => {
         const cards = deck.cards.filter((id) => id !== cardId);
 
         // Remove card from deck
-        return AsyncStorage.mergeItem(DECK_STORAGE_KEY + ':' + deckId, { cards })
+        return AsyncStorage.mergeItem(DECK_STORAGE_KEY + ':' + deckId, JSON.stringify({ cards }))
       }),
     getCard(cardId)
       .then((card) => {
@@ -291,7 +302,7 @@ export function removeCardFromDeck(deckId, cardId) {
         } else {
           const decks = card.decks.filter((id) => id !== deckId)
           // Update card if it still belongs to some other deck(s).
-          return AsyncStorage.mergeItem(CARD_STORAGE_KEY + ':' + cardId, { decks });
+          return AsyncStorage.mergeItem(CARD_STORAGE_KEY + ':' + cardId, JSON.stringify({ decks }));
         }
       })
   ]);

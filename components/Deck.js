@@ -51,11 +51,21 @@ class Deck extends Component {
   }
 
   startQuiz = () => {
-    const { title, cards } = this.props.deck;
+    const { title, cards, id } = this.props.deck;
 
     this.props.navigation.navigate(
       'Quiz',
-      { title, cards, cardNumber: 1 }
+      { title, cards, id, cardNumber: 1 }
+    )
+  }
+
+  viewAllCards = () => {
+    const { id } = this.props.deck;
+    const title = this.props.navigation.getParam('title');
+
+    this.props.navigation.navigate(
+      'DeckCardList',
+      { id, title }
     )
   }
 
@@ -96,6 +106,12 @@ class Deck extends Component {
                 onPress={this.startQuiz}
               >
                 <ButtonText>Start Quiz</ButtonText>
+              </CardButton>
+              <CardButton
+                color={'black'}
+                onPress={this.viewAllCards}
+              >
+                <ButtonText>Show Cards</ButtonText>
               </CardButton>
             </View>
           </TopOfDeck>

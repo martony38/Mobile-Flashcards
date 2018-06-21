@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, Text, View, ImageBackground } from 'react-native';
+import { Text, View, ImageBackground } from 'react-native';
 import styled from 'styled-components';
 import Card, { CardButton, ButtonText } from "./Card";
 

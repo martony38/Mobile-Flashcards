@@ -64,7 +64,7 @@ const CardHelp = styled(Text)`
   text-align: center;
 `
 
-const CardFront = ({ text, opacity, showAnswer, ready, deleteCard }) => (
+const CardFront = ({ text, opacity, showAnswer, ready }) => (
   <CardFace
     style={{ opacity }}
   >
@@ -78,13 +78,6 @@ const CardFront = ({ text, opacity, showAnswer, ready, deleteCard }) => (
         <ButtonText>Show Answer</ButtonText>
       </CardButton>
       <CardHelp>Turn card by swiping to show answer</CardHelp>
-      <CardButton
-        color={'black'}
-        onPress={deleteCard}
-        disabled={!ready}
-      >
-        <ButtonText>Delete Card</ButtonText>
-      </CardButton>
     </View>
   </CardFace>
 )
@@ -286,7 +279,6 @@ class Card extends Component {
           opacity={cardFrontOpacity}
           text={question}
           showAnswer={this.flipCard}
-          deleteCard={() => this.props.deleteCard(id)}
           ready={ready}
         />}
         {(!ready || showAnswer) && <CardBack

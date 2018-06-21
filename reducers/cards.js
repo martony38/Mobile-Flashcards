@@ -1,4 +1,4 @@
-import { RECEIVE_CARDS, REMOVE_CARD, ADD_CARD } from "../actions/cards";
+import { RECEIVE_CARDS, REMOVE_CARD, ADD_CARD, EDIT_CARD } from "../actions/cards";
 
 export default function cards (state = {}, action) {
   switch (action.type) {
@@ -30,6 +30,15 @@ export default function cards (state = {}, action) {
               decks
             }
           };
+    case EDIT_CARD :
+      return {
+        ...state,
+        [action.id]: {
+          ...state[action.id],
+          question: action.question,
+          answer: action.answer
+        }
+      };
     default :
       return state;
   }
