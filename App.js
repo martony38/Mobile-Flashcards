@@ -1,10 +1,9 @@
 import React from 'react';
 import { createStore } from 'redux';
-import { Provider } from 'react-redux';
-import { StyleSheet, Text, View } from 'react-native';
+import { Provider, connect } from 'react-redux';
+import { View } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Constants } from 'expo';
 import reducer from './reducers';
 import middleware from './middleware';
 import DeckList from './components/DeckList';
@@ -12,6 +11,11 @@ import NewDeck from './components/NewDeck';
 import Deck from './components/Deck';
 import Quiz from './components/Quiz';
 import NewCard from "./components/NewCard";
+import LoadingScreen from "./components/LoadingScreen";
+import DeckCardList from "./components/DeckCardList";
+import EditCard from './components/EditCard';
+
+import { handleReceiveInitialData } from "./actions/index";
 
 const Tabs = createBottomTabNavigator({
   DeckList: {
@@ -46,9 +50,11 @@ const Tabs = createBottomTabNavigator({
 
 const MainNavigator = createStackNavigator({
   Home: Tabs,
-  Deck: Deck,
-  Quiz: Quiz,
-  NewCard: NewCard
+  Deck,
+  Quiz,
+  NewCard,
+  DeckCardList,
+  EditCard
 },{
   navigationOptions: {
     title: 'Mobile Flashcards',
@@ -67,13 +73,38 @@ const MainNavigator = createStackNavigator({
   }
 });
 
+class ConnectedView extends React.Component {
+  state = {
+    loading: true
+  }
+
+  componentDidMount() {
+    this.props.dispatch(handleReceiveInitialData())
+      .then(() => {
+        this.setState({ loading: false });
+      });
+  }
+
+  render() {
+    const { loading } = this.state;
+
+    return (
+      <View style={{flex: 1}}>
+        {loading
+          ? <LoadingScreen />
+          : <MainNavigator />}
+      </View>
+    );
+  }
+}
+
+const ConnectedApp = connect()(ConnectedView);
+
 export default class App extends React.Component {
   render() {
     return (
       <Provider store={createStore(reducer, middleware)}>
-        <View style={{flex: 1}}>
-          <MainNavigator />
-        </View>
+        <ConnectedApp />
       </Provider>
     );
   }
