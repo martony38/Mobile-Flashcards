@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import {
-  TouchableOpacity,
-  Text,
   TextInput,
-  View,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -12,8 +9,7 @@ import {
 } from 'react-native';
 import styled from 'styled-components';
 import { handleAddDeck } from "../actions/decks";
-import { SubmitButton } from "./NewCard";
-import { ButtonText } from "./Card";
+import TextButton from "./TextButton";
 
 const NewDeckInput = styled(TextInput)`
 border-radius: 5px;
@@ -71,12 +67,12 @@ class NewDeck extends Component {
               value={text}
               onChangeText={(text) => this.setState({ text })}
             />
-            <SubmitButton
+            <TextButton
               disabled={text === ''}
               onPress={this.createDeck}
             >
-              <ButtonText>Create Deck</ButtonText>
-            </SubmitButton>
+              Create Deck
+            </TextButton>
           </NewDeckContainer>
         </KeyboardAvoidingView>
       </ImageBackground>

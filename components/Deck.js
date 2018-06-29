@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { Text, View, Dimensions, ImageBackground } from 'react-native';
 import styled from 'styled-components';
-import { card, CardButton, ButtonText, CardText } from "./Card";
+import { card, CardText } from "./Card";
 import { handleRemoveDeck } from '../actions/decks';
+import TextButton from "./TextButton";
 
 export const TopOfDeck = styled(View)`
   ${card}
@@ -23,6 +24,11 @@ export const DeckTitle = styled(Text)`
 `
 
 export const DeckDescription = styled(View)`
+  align-items: center;
+`
+
+const DeckText = styled(View)`
+  justify-content: space-around;
   align-items: center;
 `
 
@@ -107,37 +113,47 @@ class Deck extends Component {
             offset={deck.cards.length > 10 ? 9 : deck.cards.length - 1}
             width={(width - 2 * 15)}
           >
-            <FullDeckTitle numberOfLines={6}>{deck.title}</FullDeckTitle>
-            <DeckDescription>
-              <CardText>{deck.cards.length}</CardText>
-              <CardText>{`card${deck.cards.length === 1 ? '' : 's'}`}</CardText>
-            </DeckDescription>
+            <DeckText>
+              <FullDeckTitle numberOfLines={6}>{deck.title}</FullDeckTitle>
+              <DeckDescription>
+                <CardText>{deck.cards.length}</CardText>
+                <CardText>{`card${deck.cards.length === 1 ? '' : 's'}`}</CardText>
+              </DeckDescription>
+            </DeckText>
             <View>
-              <CardButton
-                color={'blue'}
-                onPress={this.addCard}
-              >
-                <ButtonText>Add Card</ButtonText>
-              </CardButton>
-              {/* TODO: Deactivate button if deck has not any cards */}
-              <CardButton
-                color={'purple'}
-                onPress={this.startQuiz}
-              >
-                <ButtonText>Start Quiz</ButtonText>
-              </CardButton>
-              <CardButton
-                color={'black'}
-                onPress={this.viewAllCards}
-              >
-                <ButtonText>Show Cards</ButtonText>
-              </CardButton>
-              <CardButton
-                color={'red'}
-                onPress={this.deleteDeck}
-              >
-                <ButtonText>Delete Deck</ButtonText>
-              </CardButton>
+              <View>
+                {/* TODO: Deactivate button if deck has not any cards */}
+                <TextButton
+                  color={'purple'}
+                  onPress={this.startQuiz}
+                  disabled={deck.cards.length === 0}
+                >
+                  Start Quiz
+                </TextButton>
+              </View>
+              <View>
+                <TextButton
+                  color={'blue'}
+                  onPress={this.addCard}
+                >
+                  Add Card
+                </TextButton>
+                <TextButton
+                  color={'black'}
+                  onPress={this.viewAllCards}
+                  disabled={deck.cards.length === 0}
+                >
+                  Show Cards
+                </TextButton>
+              </View>
+              <View>
+                <TextButton
+                  color={'red'}
+                  onPress={this.deleteDeck}
+                >
+                  Delete Deck
+                </TextButton>
+              </View>
             </View>
           </TopOfDeck>
         </View>

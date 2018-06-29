@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Text, View, ImageBackground } from 'react-native';
 import styled from 'styled-components';
-import Card, { CardButton, ButtonText } from "./Card";
+import Card from "./Card";
+import TextButton from "./TextButton";
 
 const QuizScore = styled(Text)`
   font-size: 100px;
@@ -76,18 +77,17 @@ export default class Quiz extends Component {
             : <QuizScoreView>
                 <QuizScore>{(correctAnswers / (correctAnswers + wrongAnswers) * 100).toFixed()} %</QuizScore>
                 <View>
-                  <CardButton
-                    color={'blue'}
+                  <TextButton
+                    color={'purple'}
                     onPress={this.retakeQuiz}
                   >
-                    <ButtonText>Retake Quiz</ButtonText>
-                  </CardButton>
-                  <CardButton
-                    color={'rgb(105,169,57)'}
+                    Retake Quiz
+                  </TextButton>
+                  <TextButton
                     onPress={() => { this.props.navigation.goBack() }}
                   >
-                    <ButtonText>Back to Deck</ButtonText>
-                  </CardButton>
+                    Back to Deck
+                  </TextButton>
                 </View>
               </QuizScoreView>}
         </View>

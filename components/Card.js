@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import {
   PanResponder,
-  TouchableOpacity,
   Text,
   View,
   Dimensions,
@@ -10,6 +9,7 @@ import {
   Platform
 } from 'react-native';
 import styled, { css } from 'styled-components';
+import TextButton from "./TextButton";
 
 const { width } = Dimensions.get('window');
 const cardMargin = 15;
@@ -44,22 +44,6 @@ const CardFace = styled(Animated.View)`
   align-items: center;
 `
 
-export const CardButton = styled(TouchableOpacity)`
-  background-color: ${props => props.color};
-  border-radius: 30px;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  margin: 10px;
-  align-items: center;
-  width: ${width / 2}px;
-`
-
-export const ButtonText = styled(Text)`
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-`
-
 export const CardText = styled(Text)`
   font-size: 20px;
   font-weight: bold;
@@ -78,13 +62,13 @@ const CardFront = ({ text, opacity, showAnswer, ready }) => (
   >
     <CardText>{text}</CardText>
     <View style={{ alignItems: 'center'}}>
-      <CardButton
+      <TextButton
         color={'blue'}
         onPress={showAnswer}
         disabled={!ready}
       >
-        <ButtonText>Show Answer</ButtonText>
-      </CardButton>
+        Show Answer
+      </TextButton>
       <CardHelp>Turn card by swiping to show answer</CardHelp>
     </View>
   </CardFace>
@@ -97,20 +81,20 @@ const CardBack = ({ text, opacity, answerCorrect, answerIncorrect, ready, scaleX
     <CardText>{text}</CardText>
     {/*TODO: Reduce font sixe if text too long to fit on card */}
     <View>
-      <CardButton
+      <TextButton
         color={'rgb(105,169,57)'}
         onPress={answerCorrect}
         disabled={!ready}
       >
-        <ButtonText>Correct</ButtonText>
-      </CardButton>
-      <CardButton
+        Correct
+      </TextButton>
+      <TextButton
         color={'#e62e00'}
         onPress={answerIncorrect}
         disabled={!ready}
       >
-        <ButtonText>Incorrect</ButtonText>
-      </CardButton>
+        Incorrect
+      </TextButton>
     </View>
   </CardFace>
 )

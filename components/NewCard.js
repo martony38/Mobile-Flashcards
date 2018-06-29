@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import {
-  TouchableOpacity,
   Text,
   TextInput,
-  Dimensions,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
@@ -12,20 +10,7 @@ import {
 } from 'react-native';
 import styled from 'styled-components';
 import { handleAddCard } from '../actions/cards';
-import { ButtonText } from "./Card";
-
-const { width } = Dimensions.get('window');
-
-export const SubmitButton = styled(TouchableOpacity)`
-  background-color: black;
-  border-radius: 30px;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  margin: 10px;
-  align-items: center;
-  width: ${width / 2}px;
-  ${props => props.disabled && 'opacity: 0.2;'}
-`
+import TextButton from "./TextButton";
 
 const NewCardContainer = styled(ScrollView)`
   padding: 40px;
@@ -95,12 +80,13 @@ class NewCard extends Component {
               value={answer}
               onChangeText={(answer) => this.setState({ answer })}
             />
-            <SubmitButton
+            <TextButton
               disabled={question === '' || answer === ''}
               onPress={this.createCard}
+              color='black'
             >
-              <ButtonText>Create Card</ButtonText>
-            </SubmitButton>
+              Create Card
+            </TextButton>
           </NewCardContainer>
         </ KeyboardAvoidingView>
       </ImageBackground>
