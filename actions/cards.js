@@ -48,7 +48,7 @@ export function handleRemoveCard(deckId, cardId) {
   return (dispatch) => {
     // Remove card from deck on device storage.
     return removeCardFromDeck(deckId, cardId)
-      .then(() => {dispatch(removeCard(deckId, cardId))})
+      .then(() => dispatch(removeCard(deckId, cardId)))
       .catch((e) => {
         console.log('There was an error. Try Again.');
       });

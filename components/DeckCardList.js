@@ -8,6 +8,12 @@ const CardRow = styled(View)`
   flex-direction: row;
 `
 
+const NoCardText = styled(View)`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`
+
 function Card({ id, navigation, question, answer }) {
   const { width } = Dimensions.get('window');
 
@@ -77,9 +83,9 @@ class DeckCardList extends Component {
     return (
       <ImageBackground style={{flex: 1}} source={require('../img/wood-background.jpg')}>
         {Object.keys(cards).length === 0
-          ? <View>
+          ? <NoCardText>
               <Text>This deck is empty.</Text>
-            </View>
+            </NoCardText>
           : <FlatList
               data={cardsGroupedByThree}
               renderItem={this.renderCardRow}

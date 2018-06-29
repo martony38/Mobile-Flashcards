@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Text, View, Dimensions, ImageBackground } from 'react-native';
 import styled from 'styled-components';
 import { card, CardButton, ButtonText, CardText } from "./Card";
+import { handleRemoveDeck } from '../actions/decks';
 
 export const TopOfDeck = styled(View)`
   ${card}
@@ -69,6 +70,24 @@ class Deck extends Component {
     )
   }
 
+  deleteDeck = () => {
+    const { id } = this.props.deck;
+
+    this.props.dispatch(handleRemoveDeck(id));
+
+    this.props.navigation.goBack();
+  }
+
+  shouldComponentUpdate(nextProps) {
+    const { deck } = nextProps;
+
+    if (deck) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   render() {
     const { width } = Dimensions.get('window');
     const { deck } = this.props;
@@ -112,6 +131,12 @@ class Deck extends Component {
                 onPress={this.viewAllCards}
               >
                 <ButtonText>Show Cards</ButtonText>
+              </CardButton>
+              <CardButton
+                color={'red'}
+                onPress={this.deleteDeck}
+              >
+                <ButtonText>Delete Deck</ButtonText>
               </CardButton>
             </View>
           </TopOfDeck>

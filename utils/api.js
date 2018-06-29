@@ -190,7 +190,7 @@ export function saveDeck(title) {
 };
 
 export function deleteDeck(id) {
-  getDeck(id)
+  return getDeck(id)
     .then((deck) => {
       // Get all cards in deck.
       return AsyncStorage.multiGet(deck.cards.map((cardId) => CARD_STORAGE_KEY + ':' + cardId))
@@ -204,20 +204,30 @@ export function deleteDeck(id) {
         return [cardId, { decks }];
       });
 
-      return Promise.all([
+      const cardsToDelete = multiMergeArray
+        .filter((pair) => pair[1].decks.length === 0)
+        .map((pair) => pair[0]);
+
+      const cardsToUpdate = multiMergeArray
+        .filter((pair) => pair[1].decks.length !== 0)
+        .map((pair) => [pair[0], JSON.stringify(pair[1])]);
+
+      const promiseArray = [
         // Delete deck.
-        AsyncStorage.removeItem(DECK_STORAGE_KEY + ':' + id),
+        AsyncStorage.removeItem(DECK_STORAGE_KEY + ':' + id)
+      ];
 
-        // Update all cards of this deck that exists in other decks as well.
-        AsyncStorage.multiMerge(multiMergeArray.filter((pair) => pair[1].deckslength !== 0)),
-
+      if (cardsToDelete.length !== 0) {
         // Delete all cards of this deck not found in any other deck.
-        AsyncStorage.multiRemove(
-          multiMergeArray
-            .filter((pair) => pair[1].deckslength === 0)
-            .map((pair) => pair[0])
-        )
-      ]);
+        promiseArray.push(AsyncStorage.multiRemove(cardsToDelete));
+      }
+
+      if (cardsToUpdate.length !== 0) {
+        // Update all cards of this deck that exists in other decks as well.
+        promiseArray.push(AsyncStorage.multiMerge(cardsToUpdate));
+      }
+
+      return Promise.all(promiseArray);
     });
 }
 
