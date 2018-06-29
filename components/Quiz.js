@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from "react-redux";
 import { Text, View, ImageBackground } from 'react-native';
 import styled from 'styled-components';
 import Card from "./Card";
 import TextButton from "./TextButton";
+import { handleAddLocalNotification, handleRemoveLocalNotification } from "../actions/notifications";
 
 const QuizScore = styled(Text)`
   font-size: 100px;
@@ -16,7 +18,7 @@ const QuizScoreView = styled(View)`
   align-items: center;
 `
 
-export default class Quiz extends Component {
+class Quiz extends Component {
   static navigationOptions = ({ navigation }) => {
     const cards = navigation.getParam('cards');
     const cardNumber = navigation.getParam('cardNumber');
@@ -65,6 +67,23 @@ export default class Quiz extends Component {
   render() {
     const { cards, correctAnswers, wrongAnswers } = this.state;
 
+    if (cards.length === 0) {
+      const { dispatch, localNotifications } = this.props;
+
+      const currentNotifications = Object.keys(localNotifications).filter((id) => localNotifications[id] === true);
+
+      if (currentNotifications.length !== 0) {
+        // Get notification id
+        const id = currentNotifications[0];
+
+        // Delete existing notification
+        dispatch(handleRemoveLocalNotification(id));
+      }
+
+      // Add new notification for tomorrow
+      dispatch(handleAddLocalNotification());
+    }
+
     return (
       <ImageBackground style={{flex: 1}} source={require('../img/wood-background.jpg')}>
         <View style={{flex: 1, alignItems: 'center'}}>
@@ -95,3 +114,11 @@ export default class Quiz extends Component {
     );
   }
 }
+
+function mapStateToProps({ localNotifications }) {
+  return {
+    localNotifications
+  };
+}
+
+export default connect(mapStateToProps)(Quiz);
