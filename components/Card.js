@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { PanResponder, TouchableOpacity, Text, View, Dimensions, Animated } from 'react-native';
+import {
+  PanResponder,
+  TouchableOpacity,
+  Text,
+  View,
+  Dimensions,
+  Animated,
+  Platform
+} from 'react-native';
 import styled, { css } from 'styled-components';
 
 const { width } = Dimensions.get('window');
@@ -264,12 +272,13 @@ class Card extends Component {
               inputRange: [-360, -180, 0, 180, 360],
               outputRange: ['-360deg', '-180deg', '0deg', '180deg', '360deg']
             }) },
-            { perspective: 100 }, // without this line this Animation will not render on Android while working fine on iOS
             { translateX: newPosition },
-            { skewY: cardAngle.interpolate({
-              inputRange: [-360, -270, -180, -90, 0, 90, 180, 270, 360],
-              outputRange: ['0deg', '-20deg', '0deg', '20deg', '0deg', '-20deg', '0deg', '20deg', '0deg']
-            }) }
+            Platform.OS === 'ios'
+              ? { skewY: cardAngle.interpolate({
+                  inputRange: [-360, -270, -180, -90, 0, 90, 180, 270, 360],
+                  outputRange: ['0deg', '-20deg', '0deg', '20deg', '0deg', '-20deg', '0deg', '20deg', '0deg']
+                  }) }
+              : { skewY: '0deg' } // skew not working properly on Android (https://github.com/facebook/react-native/issues/12212)
           ]
         }}
         {...this._panResponder.panHandlers}
