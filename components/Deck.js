@@ -122,7 +122,6 @@ class Deck extends Component {
             </DeckText>
             <View>
               <View>
-                {/* TODO: Deactivate button if deck has not any cards */}
                 <TextButton
                   color={'purple'}
                   onPress={this.startQuiz}
