@@ -5,31 +5,6 @@ const DECK_STORAGE_KEY = 'MobileFlashCards:deck'
 const CARD_STORAGE_KEY = 'MobileFlashCards:card'
 const LOCAL_NOTIFICATION_KEY = 'MobileFlashCards:localNotification';
 
-const initial_decks = [
-  {
-    title: 'React',
-    questions: [
-      {
-        question: 'What is React?',
-        answer: 'A library for managing user interfaces'
-      },
-      {
-        question: 'Where do you make Ajax requests in React?',
-        answer: 'The componentDidMount lifecycle event'
-      }
-    ]
-  },
-  {
-    title: 'JavaScript',
-    questions: [
-      {
-        question: 'What is a closure?',
-        answer: 'The combination of a function and the lexical environment within which that function was declared.'
-      }
-    ]
-  }
-]
-
 function generateId(title) {
   // Replace white space from string
   // taken from (https://stackoverflow.com/questions/5963182/how-to-remove-spaces-from-a-string-using-javascript)
