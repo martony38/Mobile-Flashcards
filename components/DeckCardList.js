@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 import { Text, TouchableOpacity, Dimensions } from 'react-native';
 import { TopOfDeck, DeckCard, DeckTitle, DeckDescription } from './Deck';
 import { DeckRow, ItemList } from './DeckList';

@@ -1,6 +1,6 @@
-import { receiveDecks } from "./decks";
-import { receiveCards } from "./cards";
-import { receiveLocalNotifications } from "./notifications";
+import { receiveDecks } from './decks';
+import { receiveCards } from './cards';
+import { receiveLocalNotifications } from './notifications';
 import { getInitialData } from '../utils/api';
 
 export function handleReceiveInitialData() {

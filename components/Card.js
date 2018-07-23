@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 import {
   PanResponder,
   Text,
@@ -9,7 +9,7 @@ import {
   Platform
 } from 'react-native';
 import styled, { css } from 'styled-components';
-import TextButton from "./TextButton";
+import TextButton from './TextButton';
 
 const { width } = Dimensions.get('window');
 const cardMargin = 15;

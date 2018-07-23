@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 import { Text, View, Dimensions, ImageBackground } from 'react-native';
 import styled from 'styled-components';
-import { card, CardText } from "./Card";
+import { card, CardText } from './Card';
 import { handleRemoveDeck } from '../actions/decks';
-import TextButton from "./TextButton";
+import TextButton from './TextButton';
 
 export const TopOfDeck = styled(View)`
   ${card}

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 import { Text, View, ImageBackground } from 'react-native';
 import styled from 'styled-components';
-import Card from "./Card";
-import TextButton from "./TextButton";
-import { handleAddLocalNotification, handleRemoveLocalNotification } from "../actions/notifications";
+import Card from './Card';
+import TextButton from './TextButton';
+import { handleAddLocalNotification, handleRemoveLocalNotification } from '../actions/notifications';
 
 const QuizScore = styled(Text)`
   font-size: 100px;

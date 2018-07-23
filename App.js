@@ -10,12 +10,12 @@ import DeckList from './components/DeckList';
 import NewDeck from './components/NewDeck';
 import Deck from './components/Deck';
 import Quiz from './components/Quiz';
-import NewCard from "./components/NewCard";
-import LoadingScreen from "./components/LoadingScreen";
-import DeckCardList from "./components/DeckCardList";
+import NewCard from './components/NewCard';
+import LoadingScreen from './components/LoadingScreen';
+import DeckCardList from './components/DeckCardList';
 import EditCard from './components/EditCard';
 
-import { handleReceiveInitialData } from "./actions/index";
+import { handleReceiveInitialData } from './actions/index';
 
 const Tabs = createBottomTabNavigator({
   DeckList: {

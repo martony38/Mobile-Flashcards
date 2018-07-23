@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 import {
   TouchableOpacity,
   Text,
@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import styled from 'styled-components';
 import { handleEditCard, handleRemoveCard } from '../actions/cards';
-import TextButton from "./TextButton";
+import TextButton from './TextButton';
 
 const { width } = Dimensions.get('window');
 
@@ -87,14 +87,14 @@ class EditCard extends Component {
             <NewCardInput
               autoFocus
               multiline = {true}
-              placeholder="Enter question here..."
+              placeholder='Enter question here...'
               value={question}
               onChangeText={(question) => this.setState({ question })}
             />
             <Text>Answer</Text>
             <NewCardInput
               multiline = {true}
-              placeholder="Enter answer here..."
+              placeholder='Enter answer here...'
               value={answer}
               onChangeText={(answer) => this.setState({ answer })}
             />

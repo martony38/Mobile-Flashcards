@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 import { FlatList, Text, View, TouchableOpacity, Dimensions, ImageBackground } from 'react-native';
 import styled from 'styled-components';
-import { handleAddLocalNotification } from "../actions/notifications";
+import { handleAddLocalNotification } from '../actions/notifications';
 import { TopOfDeck, DeckCard, DeckTitle, DeckDescription } from './Deck';
 import { groupByThree } from '../utils/helpers';
 

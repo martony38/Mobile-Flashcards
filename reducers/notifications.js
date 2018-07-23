@@ -2,7 +2,7 @@ import {
   RECEIVE_LOCAL_NOTIFICATIONS,
   ADD_LOCAL_NOTIFICATION,
   REMOVE_LOCAL_NOTIFICATION
-} from "../actions/notifications";
+} from '../actions/notifications';
 
 export default function localNotifications (state = {}, action) {
   switch (action.type) {

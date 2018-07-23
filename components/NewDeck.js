@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 import {
   TextInput,
   KeyboardAvoidingView,
@@ -8,8 +8,8 @@ import {
   ImageBackground
 } from 'react-native';
 import styled from 'styled-components';
-import { handleAddDeck } from "../actions/decks";
-import TextButton from "./TextButton";
+import { handleAddDeck } from '../actions/decks';
+import TextButton from './TextButton';
 
 const NewDeckInput = styled(TextInput)`
 border-radius: 5px;
@@ -63,7 +63,7 @@ class NewDeck extends Component {
             <NewDeckInput
               autoFocus
               multiline = {true}
-              placeholder="Enter the title of your new deck..."
+              placeholder='Enter the title of your new deck...'
               value={text}
               onChangeText={(text) => this.setState({ text })}
             />
