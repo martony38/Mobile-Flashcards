@@ -1,20 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { FlatList, Text, View, TouchableOpacity, Dimensions, ImageBackground } from 'react-native';
-import styled from 'styled-components';
+import { Text, TouchableOpacity, Dimensions } from 'react-native';
 import { TopOfDeck, DeckCard, DeckTitle, DeckDescription } from './Deck';
+import { DeckRow, ItemList } from './DeckList';
 
-const CardRow = styled(View)`
-  flex-direction: row;
-`
-
-const NoCardText = styled(View)`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-`
-
-function Card({ id, navigation, question, answer }) {
+function SmallCard({ id, navigation, question, answer }) {
   const { width } = Dimensions.get('window');
 
   return (
@@ -54,9 +44,9 @@ class DeckCardList extends Component {
   }
 
   renderCardRow = ({ item }) => (
-    <CardRow>
+    <DeckRow>
       {item.map((card) => (
-        <Card
+        <SmallCard
           key={card.id}
           question={card.question}
           answer={card.answer}
@@ -64,34 +54,18 @@ class DeckCardList extends Component {
           navigation={this.props.navigation}
         />
       ))}
-    </CardRow>
+    </DeckRow>
   )
 
   render() {
     const { cards } = this.props;
-    const cardsGroupedByThree = cards.reduce((acc, currentValue, index, array) => {
-      if (acc.length === 0) {
-        acc.push([currentValue]);
-      } else if (acc[acc.length - 1].length < 3) {
-        acc[acc.length - 1].push(currentValue);
-      } else {
-        acc.push([currentValue]);
-      }
-      return acc
-    },[]);
 
     return (
-      <ImageBackground style={{flex: 1}} source={require('../img/wood-background.jpg')}>
-        {Object.keys(cards).length === 0
-          ? <NoCardText>
-              <Text>This deck is empty.</Text>
-            </NoCardText>
-          : <FlatList
-              data={cardsGroupedByThree}
-              renderItem={this.renderCardRow}
-              keyExtractor={(card) => card[0].id}
-            />}
-      </ImageBackground>
+      <ItemList
+        items={cards}
+        type='Card'
+        renderRow={this.renderCardRow}
+      />
     );
   }
 }

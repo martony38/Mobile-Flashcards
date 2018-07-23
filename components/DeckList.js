@@ -4,18 +4,19 @@ import { FlatList, Text, View, TouchableOpacity, Dimensions, ImageBackground } f
 import styled from 'styled-components';
 import { handleAddLocalNotification } from "../actions/notifications";
 import { TopOfDeck, DeckCard, DeckTitle, DeckDescription } from './Deck';
+import { groupByThree } from '../utils/helpers';
 
-const DeckRow = styled(View)`
+export const DeckRow = styled(View)`
   flex-direction: row;
 `
 
-const NoDeckText = styled(View)`
+export const NoDeckText = styled(View)`
   flex: 1;
   justify-content: center;
   align-items: center;
 `
 
-function Deck({ title, id, navigation, cards }) {
+function SmallDeck({ title, id, navigation, cards }) {
   const { width } = Dimensions.get('window');
 
   return (
@@ -50,6 +51,28 @@ function Deck({ title, id, navigation, cards }) {
   )
 }
 
+export class ItemList extends Component {
+  render() {
+    const { items, type, renderRow } = this.props;
+
+    return (
+      <ImageBackground style={{flex: 1}} source={require('../img/wood-background.jpg')}>
+        {Object.keys(items).length === 0
+          ? <NoDeckText>
+              {type === 'Deck'
+                ? <Text>You do not have any deck.</Text>
+                : <Text>This deck is empty.</Text>}
+            </NoDeckText>
+          : <FlatList
+              data={groupByThree(items)}
+              renderItem={renderRow}
+              keyExtractor={(item) => item[0].id}
+            />}
+      </ImageBackground>
+    );
+  }
+}
+
 class DeckList extends Component {
   componentDidMount() {
     const { dispatch, localNotifications } = this.props;
@@ -62,7 +85,7 @@ class DeckList extends Component {
   renderDeckRow = ({ item }) => (
     <DeckRow>
       {item.map((deck) => (
-        <Deck
+        <SmallDeck
           key={deck.id}
           title={deck.title}
           id={deck.id}
@@ -75,29 +98,13 @@ class DeckList extends Component {
 
   render() {
     const { decks } = this.props;
-    const decksGroupedByThree = decks.reduce((acc, currentValue, index, array) => {
-      if (acc.length === 0) {
-        acc.push([currentValue]);
-      } else if (acc[acc.length - 1].length < 3) {
-        acc[acc.length - 1].push(currentValue);
-      } else {
-        acc.push([currentValue]);
-      }
-      return acc
-    },[]);
 
     return (
-      <ImageBackground style={{flex: 1}} source={require('../img/wood-background.jpg')}>
-        {Object.keys(decks).length === 0
-          ? <NoDeckText>
-              <Text>You do not have any deck.</Text>
-            </NoDeckText>
-          : <FlatList
-              data={decksGroupedByThree}
-              renderItem={this.renderDeckRow}
-              keyExtractor={(deck) => deck[0].id}
-            />}
-      </ImageBackground>
+      <ItemList
+        items={decks}
+        type='Deck'
+        renderRow={this.renderDeckRow}
+      />
     );
   }
 }
