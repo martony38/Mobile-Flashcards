@@ -27,13 +27,13 @@ function Card({ id, navigation, question, answer }) {
       <DeckCard
         small
         offset={0}
-        width={((width - 6 * 5) / 3)}
+        cardWidth={((width - 6 * 5) / 3)}
         lastOne={false}
       />
       <TopOfDeck
         small
         offset={0}
-        width={((width - 6 * 5) / 3)}
+        cardWidth={((width - 6 * 5) / 3)}
       >
         <DeckTitle numberOfLines={3}>{question}</DeckTitle>
         <DeckDescription>

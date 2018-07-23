@@ -24,14 +24,13 @@ export const card = css`
   border-color: rgb(188,130,78);
   background-color: #F4DBAA;
   padding: 10px;
-  ${props => props.width && `height: ${(props.width * 3.5 / 2.5)}px;`}
-  ${props => props.width && `width: ${props.width}px;`}
+  ${props => props.cardWidth && `height: ${(props.cardWidth * 3.5 / 2.5)}px;`}
+  ${props => props.cardWidth && `width: ${props.cardWidth}px;`}
 `
 
-const StyledCard = styled(Animated.View)`
+const QuizCard = styled(Animated.View)`
   ${card}
   box-shadow: 0 19px 38px rgba(0,0,0,0.4);
-  /* box-shadow: 0 1px 1px rgba(0,0,0,0.2); */
 `
 
 const CardFace = styled(Animated.View)`
@@ -56,9 +55,9 @@ const CardHelp = styled(Text)`
   text-align: center;
 `
 
-const CardFront = ({ text, opacity, showAnswer, ready }) => (
+const CardFront = ({ text, cardOpacity, showAnswer, ready }) => (
   <CardFace
-    style={{ opacity }}
+    style={{ opacity: cardOpacity }}
   >
     <CardText>{text}</CardText>
     <View style={{ alignItems: 'center'}}>
@@ -74,9 +73,9 @@ const CardFront = ({ text, opacity, showAnswer, ready }) => (
   </CardFace>
 )
 
-const CardBack = ({ text, opacity, answerCorrect, answerIncorrect, ready, scaleX }) => (
+const CardBack = ({ text, cardOpacity, answerCorrect, answerIncorrect, ready }) => (
   <CardFace
-    style={{ opacity, transform: [{ scaleX }] }}
+    style={{ opacity: cardOpacity, transform: [{ scaleX: -1 }] }}
   >
     <CardText>{text}</CardText>
     {/*TODO: Reduce font sixe if text too long to fit on card */}
@@ -248,8 +247,8 @@ class Card extends Component {
     })
 
     return (
-      <StyledCard
-        width={cardWidth}
+      <QuizCard
+        cardWidth={cardWidth}
         style={{
           transform: [
             { rotateY: cardAngle.interpolate({
@@ -268,22 +267,19 @@ class Card extends Component {
         {...this._panResponder.panHandlers}
       >
         {(!ready || !showAnswer) && <CardFront
-          width={cardWidth}
-          opacity={cardFrontOpacity}
+          cardOpacity={cardFrontOpacity}
           text={question}
           showAnswer={this.flipCard}
           ready={ready}
         />}
         {(!ready || showAnswer) && <CardBack
-          width={cardWidth}
-          opacity={cardBackOpacity}
+          cardOpacity={cardBackOpacity}
           text={answer}
           answerCorrect={this.answerCorrect}
           answerIncorrect={this.answerIncorrect}
           ready={ready}
-          scaleX={-1}
         />}
-      </StyledCard>
+      </QuizCard>
     );
   }
 }

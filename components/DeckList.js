@@ -29,7 +29,7 @@ function Deck({ title, id, navigation, cards }) {
         <DeckCard
           small
           offset={index}
-          width={((width - 6 * 5) / 3)}
+          cardWidth={((width - 6 * 5) / 3)}
           lastOne={index === cards.length}
           key={card}
         />
@@ -37,7 +37,7 @@ function Deck({ title, id, navigation, cards }) {
       <TopOfDeck
         small
         offset={cards.length > 10 ? 9 : cards.length - 1}
-        width={((width - 6 * 5) / 3)}
+        cardWidth={((width - 6 * 5) / 3)}
         style={{opacity: cards.length === 0 ? 0.5 : 1}}
       >
         <DeckTitle numberOfLines={3}>{title}</DeckTitle>

@@ -104,14 +104,14 @@ class Deck extends Component {
           {deck.cards.slice(0,10).map((card, index) => (
             <DeckCard
               offset={index}
-              width={(width - 2 * 15)}
+              cardWidth={(width - 2 * 15)}
               lastOne={index === deck.cards.length}
               key={card}
             />
           ))}
           <TopOfDeck
             offset={deck.cards.length > 10 ? 9 : deck.cards.length - 1}
-            width={(width - 2 * 15)}
+            cardWidth={(width - 2 * 15)}
           >
             <DeckText>
               <FullDeckTitle numberOfLines={6}>{deck.title}</FullDeckTitle>
