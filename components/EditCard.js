@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import styled from 'styled-components';
 import { handleEditCard, handleRemoveCard } from '../actions/cards';
-import { ButtonText, CardButton } from "./Card";
+import TextButton from "./TextButton";
 
 const { width } = Dimensions.get('window');
 
@@ -98,18 +98,19 @@ class EditCard extends Component {
               value={answer}
               onChangeText={(answer) => this.setState({ answer })}
             />
-            <SubmitButton
+            <TextButton
+              color={'black'}
               disabled={question === '' || answer === ''}
               onPress={this.updateCard}
             >
-              <ButtonText>Update Card</ButtonText>
-            </SubmitButton>
-            <CardButton
+              Update Card
+            </TextButton>
+            <TextButton
               color={'red'}
               onPress={this.deleteCard}
             >
-              <ButtonText>Delete Card</ButtonText>
-            </CardButton>
+              Delete Card
+            </TextButton>
           </NewCardContainer>
         </ KeyboardAvoidingView>
       </ImageBackground>
